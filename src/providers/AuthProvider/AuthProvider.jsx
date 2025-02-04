@@ -23,7 +23,7 @@ const AuthProvider = ({ children }) => {
     const fetchHotelData = async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://airbnb-darius-palmer-server.vercel.app/hotel-data');
+        const response = await fetch(`${import.meta.env.VITE_API_Link}/hotel-data`);
         if (!response.ok) {
           throw new Error(`Error fetching hotelData.json: ${response.status} ${response.statusText}`);
         }
@@ -45,7 +45,7 @@ const AuthProvider = ({ children }) => {
     const fetchHotelData = async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://airbnb-darius-palmer-server.vercel.app/users');
+        const response = await fetch(`${import.meta.env.VITE_API_Link}/users`);
         if (!response.ok) {
           throw new Error(`Error fetching hotelData.json: ${response.status} ${response.statusText}`);
         }
@@ -66,7 +66,7 @@ const AuthProvider = ({ children }) => {
     const fetchHotelListData = async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://airbnb-darius-palmer-server.vercel.app/hotel-list');
+        const response = await fetch(`${import.meta.env.VITE_API_Link}/hotel-list`);
         if (!response.ok) {
           throw new Error(`Error fetching hotelListData.json: ${response.status} ${response.statusText}`);
         }
@@ -87,7 +87,7 @@ const AuthProvider = ({ children }) => {
     const fetchEarningList = async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://airbnb-darius-palmer-server.vercel.app/earningList');
+        const response = await fetch(`${import.meta.env.VITE_API_Link}/earningList`);
         if (!response.ok) {
           throw new Error(`Error fetching earningList.json: ${response.status} ${response.statusText}`);
         }
