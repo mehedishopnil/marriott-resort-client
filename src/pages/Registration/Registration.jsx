@@ -4,20 +4,19 @@ import { AuthContext } from '../../providers/AuthProvider/AuthProvider';
 
 const Registration = () => {
   const { registration } = useContext(AuthContext);
-  const navigate = useNavigate(); // For redirecting after registration
+  const navigate = useNavigate(); 
 
   // State for form inputs
   const [name, setName] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // State for error messages
+  const [error, setError] = useState(''); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Call registration function from AuthContext
       await registration(email, password);
       // Redirect to another page after successful registration
       navigate('/login'); // Redirect to login page or another page as needed

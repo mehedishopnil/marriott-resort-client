@@ -1,43 +1,45 @@
 import { Link, Outlet } from "react-router-dom";
 import { Disclosure, Transition } from "@headlessui/react";
-import { MdOutlineLuggage } from "react-icons/md";
+import { MdOutlineLuggage, MdMenu, MdClose, MdAddHome } from "react-icons/md";
 import { LiaMoneyBillSolid } from "react-icons/lia";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import { PiBookOpenText } from "react-icons/pi";
-import { MdAddHome } from "react-icons/md";
 import { FaHome, FaUser } from "react-icons/fa";
 import { HiOutlineHomeModern } from "react-icons/hi2";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
+import logo from "../../../public/Marriott-Logo.png"; // Fixed logo import
+import Spinner from "../../components/Spinner";
 
 
 const HostingDashboard = () => {
-  const { loading } = useContext(AuthContext); // Consume loading state
+  const { loading } = useContext(AuthContext);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p>Loading...</p> {/* Replace with a spinner or more sophisticated loading indicator */}
+        <Spinner /> {/* Replace with your custom spinner */}
       </div>
     );
   }
+
   return (
     <div>
+      {/* Main Layout */}
       <div className="lg:flex">
-
         {/* Sidebar for LG screens */}
-        <div className="lg:w-64 lg:flex-shrink-0 md:bg-slate-200">
+        <div className="hidden lg:block lg:w-64 lg:flex-shrink-0 bg-slate-200">
           <div className="mt-5 ml-5">
-          <Link to='/'><img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Airbnb_Logo_B%C3%A9lo.svg/1200px-Airbnb_Logo_B%C3%A9lo.svg.png"
-            className="w-20 md:w-32"
-            alt="Airbnb Logo"
-          /></Link>
+            <Link to="/">
+              <img src={logo} className="w-8 md:w-32" alt="Marriott Logo" />
+            </Link>
           </div>
+
           <ul className="menu p-4 text-gray-700 font-bold text-lg">
             <li>
               <Link to="listings">
-              <HiOutlineHomeModern /> Listings
+                <HiOutlineHomeModern /> Listings
               </Link>
             </li>
             <li>
@@ -66,74 +68,100 @@ const HostingDashboard = () => {
               </Link>
             </li>
 
-            <div className="border border-gray-400"></div>
+            <div className="border border-gray-400 my-4"></div>
 
             <li>
               <Link to="/">
-              <FaHome /> Home
+                <FaHome /> Home
               </Link>
-
+            </li>
+            <li>
               <Link to="/profile">
-              <FaUser /> Profile
+                <FaUser /> Profile
               </Link>
             </li>
           </ul>
         </div>
 
         {/* Content area */}
-        <div className="lg:flex-grow">
-          
-          {/* Page content here */}
-          <Outlet />
+        <div className="flex-grow">
+          {/* Mobile Header */}
+          <div className="lg:hidden flex items-center justify-between p-4 bg-slate-200">
+            <Link to="/">
+              <img src={logo} className="w-20" alt="Marriott Logo" />
+            </Link>
+            <button
+              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-gray-700 focus:outline-none"
+            >
+              {isMobileMenuOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          <Transition
+            show={isMobileMenuOpen}
+            enter="transition-transform duration-300"
+            enterFrom="-translate-x-full"
+            enterTo="translate-x-0"
+            leave="transition-transform duration-300"
+            leaveFrom="translate-x-0"
+            leaveTo="-translate-x-full"
+          >
+            <div className="lg:hidden bg-slate-200 p-4">
+              <ul className="menu text-gray-700 font-bold text-lg">
+                <li>
+                  <Link to="listings" onClick={() => setMobileMenuOpen(false)}>
+                    <HiOutlineHomeModern /> Listings
+                  </Link>
+                </li>
+                <li>
+                  <Link to="reservation" onClick={() => setMobileMenuOpen(false)}>
+                    <MdOutlineLuggage /> Reservations
+                  </Link>
+                </li>
+                <li>
+                  <Link to="earnings" onClick={() => setMobileMenuOpen(false)}>
+                    <LiaMoneyBillSolid /> Earnings
+                  </Link>
+                </li>
+                <li>
+                  <Link to="insights" onClick={() => setMobileMenuOpen(false)}>
+                    <TbBrandGoogleAnalytics /> Insights
+                  </Link>
+                </li>
+                <li>
+                  <Link to="guide-books" onClick={() => setMobileMenuOpen(false)}>
+                    <PiBookOpenText /> Guidebooks
+                  </Link>
+                </li>
+                <li>
+                  <Link to="create-new-list" onClick={() => setMobileMenuOpen(false)}>
+                    <MdAddHome /> Create a new list
+                  </Link>
+                </li>
+
+                <div className="border border-gray-400 my-4"></div>
+
+                <li>
+                  <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                    <FaHome /> Home
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                    <FaUser /> Profile
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </Transition>
+
+          {/* Page content */}
+          <div className="p-4">
+            <Outlet />
+          </div>
         </div>
-      </div>
-
-
-
-      {/* Mobile navigation */}
-      <div className="lg:hidden">
-      
-
-       <div>
-         <Disclosure as="div" className="lg:hidden">
-          {({ open }) => (
-            <>
-              <Transition
-                show={open}
-                enter="transition-transform duration-300"
-                enterFrom="-translate-x-full"
-                enterTo="translate-x-0"
-                leave="transition-transform duration-300"
-                leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full"
-              >
-                <Disclosure.Panel className=" p-4">
-                <div>
-          
-        </div>
-                  <ul className="menu text-gray-700 font-bold text-xl">
-                    <li>
-                      <Link to="reservation">Reservations</Link>
-                    </li>
-                    <li>
-                      <Link to="earnings">Earnings</Link>
-                    </li>
-                    <li>
-                      <Link to="reservation">Insights</Link>
-                    </li>
-                    <li>
-                      <Link to="reservation">Guidebooks</Link>
-                    </li>
-                    <li>
-                      <Link to="reservation">Create a new list</Link>
-                    </li>
-                  </ul>
-                </Disclosure.Panel>
-              </Transition>
-            </>
-          )}
-        </Disclosure>
-       </div>
       </div>
     </div>
   );

@@ -138,7 +138,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (loading) {
       const createUser = () => {
-        const user = "Mehedi Hasan"; // Placeholder, replace or remove as needed
+        const user = "Mehedi Hasan";
         setUser(user);
       };
 
