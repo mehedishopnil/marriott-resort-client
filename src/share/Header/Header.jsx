@@ -4,6 +4,7 @@ import { Disclosure, Transition } from "@headlessui/react";
 import { MdMenu } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
+import logo from "../../../public/Marriott-Logo.png"
 
 const Header = () => {
   const { usersData, login, registration } = useContext(AuthContext);
@@ -28,14 +29,15 @@ const Header = () => {
     <div className="container mx-auto bg-slate-300 py-5 px-5">
       <div className="flex items-center justify-between">
         {/* Logo */}
-        <div>
+        <div className="flex items-center gap-3">
           <Link to='/'>
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Airbnb_Logo_B%C3%A9lo.svg/1200px-Airbnb_Logo_B%C3%A9lo.svg.png"
-              className="w-20 md:w-32"
+              src={logo}
+              className="w-14 md:w-32"
               alt="Airbnb Logo"
             />
           </Link>
+          <h1 className="text-2xl font-bold uppercase text-[#b80606]">Marriott</h1>
         </div>
 
         {/* Hamburger Button for Mobile */}
