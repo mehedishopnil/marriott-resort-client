@@ -66,7 +66,7 @@ const AuthProvider = ({ children }) => {
     const fetchHotelListData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_Link}/hotel-list`);
+        const response = await fetch(`${import.meta.env.VITE_API_Link}/hotels-list`);
         if (!response.ok) {
           throw new Error(`Error fetching hotelListData.json: ${response.status} ${response.statusText}`);
         }
@@ -87,7 +87,7 @@ const AuthProvider = ({ children }) => {
     const fetchEarningList = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_Link}/earningList`);
+        const response = await fetch(`${import.meta.env.VITE_API_Link}/all-earnings`);
         if (!response.ok) {
           throw new Error(`Error fetching earningList.json: ${response.status} ${response.statusText}`);
         }

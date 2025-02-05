@@ -4,14 +4,19 @@ import { BsSearch } from "react-icons/bs";
 import ListingCard from "../../components/ListingCard/ListingCard";
 
 const Listings = () => {
-  const { hotelListData, loading, user } = useContext(AuthContext);
+  const { hotelListData, hotelData, loading, user } = useContext(AuthContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredListings, setFilteredListings] = useState([]);
 
   useEffect(() => {
     if (!loading) {
-      // Filter the listings based on the search term only if loading is false
-      const filteredData = hotelListData.filter((item) => {
+      // Filter hotelData based on names present in hotelListData
+      const matchedData = hotelData.filter((hotel) =>
+        hotelListData.some((listItem) => listItem.title === hotel.name)
+      );
+
+      // Apply search filtering on the matched data
+      const filteredData = matchedData.filter((item) => {
         const itemName = item.name ? item.name.toLowerCase() : "";
         const itemLocation = item.location ? item.location.toLowerCase() : "";
         return (
@@ -19,10 +24,10 @@ const Listings = () => {
           itemLocation.includes(searchTerm.toLowerCase())
         );
       });
-    
+
       setFilteredListings(filteredData);
     }
-  }, [hotelListData, searchTerm, loading]);
+  }, [hotelListData, hotelData, searchTerm, loading]);
 
   return (
     <div className="mt-8">
@@ -47,15 +52,13 @@ const Listings = () => {
       <div className="w-4/5 md:w-2/3 mx-auto">
         {user ? (
           loading ? (
-            <p>Loading...</p> // You can replace this with a loading indicator or placeholder
+            <p>Loading...</p>
+          ) : filteredListings.length ? (
+            filteredListings.map((item, index) => (
+              <ListingCard key={item.id} item={item} index={index} />
+            ))
           ) : (
-            filteredListings.length ? (
-              filteredListings.map((item, index) => (
-                <ListingCard key={item.id} item={item} index={index} />
-              ))
-            ) : (
-              <p>No listings found.</p> // Optional message for no data found
-            )
+            <p>No listings found.</p>
           )
         ) : (
           <p>Please log in to view listings.</p>
