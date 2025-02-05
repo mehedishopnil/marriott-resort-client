@@ -88,8 +88,13 @@ const HostingDashboard = () => {
           {/* Mobile Header */}
           <div className="lg:hidden flex items-center justify-between p-4 bg-slate-200">
             <Link to="/">
-              <img src={logo} className="w-20" alt="Marriott Logo" />
-            </Link>
+                      <div className="flex items-center gap-3">
+                        <img src={logo} className="w-8 md:w-32" alt="Marriott Logo" />
+                        <h1 className="text-2xl font-bold uppercase text-[#b80606]">
+                          Marriott
+                        </h1>
+                      </div>
+                    </Link>
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
               className="text-gray-700 focus:outline-none"
