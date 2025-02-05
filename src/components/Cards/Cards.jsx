@@ -1,25 +1,31 @@
 import { Link } from "react-router-dom";
 
 const Cards = ({ data }) => {
-    const { id, price, date, location, image } = data;
-  
-    return (
-      <div className=" space-y-10 md:w-[500px] lg:w-[500px]  m-0 md:gap-5">
-        <Link to='/'>
-        <div className="bg-white p-4 rounded-lg shadow-md">
+  const { id, price, date, location, image } = data;
 
-          {/* Exclude category from displaying */}
-          <img src={image} alt={`Image for ${id}`} className="mt-2 w-[350px] h-[200px] md:w-[450px] md:h-[300px] lg:w-[450px] lg:h-[300px] xl:w-[450px] xl:h-[300px]  rounded-md" />
-          <p className="mt-2 text-lg font-semibold text-gray-600">Location: {location}</p>
-          <p className="mt-2 text-gray-600">Date: {date}</p>
-          <p className="mt-2 text-gray-600">Price: <span className="text-black text-lg">{price}</span></p>
-          
-          <div className="flex justify-center">
+  return (
+    <div className="w-full max-w-sm mx-auto">
+      <Link to="/">
+        <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105 overflow-hidden">
+          {/* Resort Image */}
+          <img
+            src={image}
+            alt={`Resort ${id}`}
+            className="w-full h-56 object-cover"
+          />
+
+          {/* Resort Details */}
+          <div className="p-4 space-y-2">
+            <p className="text-lg font-semibold text-gray-700">📍 {location}</p>
+            <p className="text-gray-600">📅 {date}</p>
+            <p className="text-gray-800 font-semibold">
+              💰 Price: <span className="text-blue-600">${price}</span>
+            </p>
           </div>
         </div>
-        </Link>
-        
-      </div>
-    );
-  };
+      </Link>
+    </div>
+  );
+};
+
 export default Cards;

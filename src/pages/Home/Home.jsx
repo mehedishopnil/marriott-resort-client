@@ -1,43 +1,44 @@
-import { useContext, useState } from 'react';
-import { AuthContext } from '../../providers/AuthProvider/AuthProvider';
-import { BsSearch } from 'react-icons/bs';
-import { FaTree, FaUmbrellaBeach, FaWarehouse } from 'react-icons/fa';
-import { MdHouseboat } from 'react-icons/md';
-import { GiIsland } from 'react-icons/gi';
-import Cards from '../../components/Cards/Cards';
-import Spinner from '../../components/Spinner';
+import { useContext, useState } from "react";
+import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
+import { BsSearch } from "react-icons/bs";
+import { FaTree, FaUmbrellaBeach, FaWarehouse } from "react-icons/fa";
+import { MdHouseboat } from "react-icons/md";
+import { GiIsland } from "react-icons/gi";
+import Cards from "../../components/Cards/Cards";
+import Spinner from "../../components/Spinner";
 
 const Home = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 9;
 
   const { hotelData, loading } = useContext(AuthContext);
 
-  const selectedCategories = ['Tropical', 'Beach', 'Tiny homes', 'Farms', 'Islands'];
+  const selectedCategories = ["Tropical", "Beach", "Tiny homes", "Farms", "Islands"];
 
   const categoryIcons = {
-    'Tropical': <FaTree />,
-    'Beach': <FaUmbrellaBeach />,
-    'Tiny homes': <MdHouseboat />,
-    'Farms': <FaWarehouse />,
-    'Islands': <GiIsland />,
+    Tropical: <FaTree size={20} />,
+    Beach: <FaUmbrellaBeach size={20} />,
+    "Tiny homes": <MdHouseboat size={20} />,
+    Farms: <FaWarehouse size={20} />,
+    Islands: <GiIsland size={20} />,
   };
 
-  // Filter data based on selected category and search term
+  // Filter data based on category and search term
   const filteredData = hotelData
-    .filter((item) => (selectedCategory === 'All' || item.category === selectedCategory))
+    .filter((item) => selectedCategory === "All" || item.category === selectedCategory)
     .filter(
       (item) =>
-        (item.name && item.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (item.location && item.location.toLowerCase().includes(searchTerm.toLowerCase()))
+        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.location?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Calculate total pages for pagination
   const totalPages = Math.ceil(
-    hotelData.filter((item) => selectedCategory === 'All' || item.category === selectedCategory).length / itemsPerPage
+    hotelData.filter((item) => selectedCategory === "All" || item.category === selectedCategory).length /
+      itemsPerPage
   );
 
   // Handle page change
@@ -51,72 +52,76 @@ const Home = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Spinner /> 
+        <Spinner />
       </div>
     );
   }
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">
-      {/* Search bar with search icon */}
-      <div className="flex justify-center items-center mt-5 mb-4">
-        <div className="bg-white rounded-full border p-3 shadow w-full max-w-4xl mx-auto flex items-center">
-          <BsSearch size={20} className="text-gray-500 mr-2" />
+      {/* Search Bar */}
+      <div className="flex justify-center items-center mt-6 mb-6">
+        <div className="bg-white shadow-md  rounded-full w-full max-w-xl flex items-center p-3">
+          <BsSearch size={20} className="text-gray-500 mx-3" />
           <input
             type="text"
             placeholder="Search by name or location..."
-            className="w-full h-10 pl-4 rounded-full outline-none"
+            className="w-full border-none outline-none text-gray-700"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
 
-      {/* Filter Section */}
-      <div className="flex flex-col justify-center items-center mb-4 pt-10">
-        <div className="flex flex-wrap justify-center gap-2 md:gap-4">
-          {selectedCategories.map((category, index) => (
-            <button
-              key={index}
-              className={`flex items-center justify-center p-3 md:p-4 border rounded transition-colors duration-300 ${
-                selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
-              }`}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {categoryIcons[category]} 
-              <span className="ml-2 hidden md:inline">{category}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Cards Section */}
-      <div className="w-full grid grid-cols-1 justify-center items-center sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 px-2">
-        {filteredData.map((item, index) => (
-          <Cards key={index} data={item} />
+      {/* Category Filter Section */}
+      <div className="flex flex-wrap justify-center gap-3 mb-6">
+        {selectedCategories.map((category, index) => (
+          <button
+            key={index}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 shadow-md ${
+              selectedCategory === category
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white"
+            }`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {categoryIcons[category]}
+            <span>{category}</span>
+          </button>
         ))}
       </div>
 
-      {/* Pagination Section */}
-      <div className="flex items-center justify-center mt-4">
-        <button
-          className="mr-2 px-4 py-2 border rounded focus:outline-none"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          {'<'}
-        </button>
-        <span className="mx-2">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          className="ml-2 px-4 py-2 border rounded focus:outline-none"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          {'>'}
-        </button>
+      {/* Cards Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredData.length > 0 ? (
+          filteredData.map((item, index) => <Cards key={index} data={item} />)
+        ) : (
+          <p className="col-span-full text-center text-gray-500 text-lg">No resorts found.</p>
+        )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center mt-8 space-x-2">
+          <button
+            className="px-4 py-2 rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            &lt;
+          </button>
+          <span className="text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="px-4 py-2 rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            &gt;
+          </button>
+        </div>
+      )}
     </div>
   );
 };
