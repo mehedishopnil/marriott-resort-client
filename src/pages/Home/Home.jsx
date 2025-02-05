@@ -5,6 +5,7 @@ import { FaTree, FaUmbrellaBeach, FaWarehouse } from 'react-icons/fa';
 import { MdHouseboat } from 'react-icons/md';
 import { GiIsland } from 'react-icons/gi';
 import Cards from '../../components/Cards/Cards';
+import Spinner from '../../components/Spinner';
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -12,7 +13,7 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 9;
 
-  const { hotelData } = useContext(AuthContext);
+  const { hotelData, loading } = useContext(AuthContext);
 
   const selectedCategories = ['Tropical', 'Beach', 'Tiny homes', 'Farms', 'Islands'];
 
@@ -24,6 +25,7 @@ const Home = () => {
     'Islands': <GiIsland />,
   };
 
+  // Filter data based on selected category and search term
   const filteredData = hotelData
     .filter((item) => (selectedCategory === 'All' || item.category === selectedCategory))
     .filter(
@@ -33,15 +35,26 @@ const Home = () => {
     )
     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  // Calculate total pages for pagination
   const totalPages = Math.ceil(
     hotelData.filter((item) => selectedCategory === 'All' || item.category === selectedCategory).length / itemsPerPage
   );
 
+  // Handle page change
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
+
+  // Show spinner while loading
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner /> 
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">

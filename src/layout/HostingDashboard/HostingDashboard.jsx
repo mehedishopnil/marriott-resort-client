@@ -8,7 +8,7 @@ import { FaHome, FaUser } from "react-icons/fa";
 import { HiOutlineHomeModern } from "react-icons/hi2";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
-import logo from "../../../public/Marriott-Logo.png"; // Fixed logo import
+import logo from "../../../public/Marriott-Logo.png";
 import Spinner from "../../components/Spinner";
 
 
