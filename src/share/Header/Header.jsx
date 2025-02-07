@@ -67,12 +67,12 @@ const Header = () => {
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
           <div className="absolute top-16 left-0 w-full bg-white shadow-md z-50">
-            <ul className="p-4 text-gray-700 font-bold text-xl">
+            <ul className="p-4 text-gray-700 font-bold text-xl space-y-3">
               <li>
                 <Link to="/" onClick={toggleMobileMenu}>Home</Link>
               </li>
               <li>
-                <Link to="/" onClick={toggleMobileMenu}>Bookings</Link>
+                <Link to="/resorts" onClick={toggleMobileMenu}>Resorts</Link>
               </li>
               <li>
                 <Link to="/hosting-dashboard/listings" onClick={toggleMobileMenu}>My Hosting</Link>
@@ -109,7 +109,7 @@ const Header = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex gap-10 font-semibold text-lg text-gray-700">
           <Link to="/">Home</Link>
-          <Link to="/">Bookings</Link>
+          <Link to="/resorts">Resorts</Link>
           <Link to="/hosting-dashboard/listings">My Hosting</Link>
           <Link to="/contact">Contact</Link>
         </div>

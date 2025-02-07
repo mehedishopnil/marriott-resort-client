@@ -31,8 +31,7 @@ const ListingCard = ({ item, index }) => {
             </div>
           </div>
           <div>
-            <p className="font-semibold">{item.name}</p>
-            <p>{item.description}</p>
+            <p className="font-semibold">{item.title}</p>
           </div>
         </div>
       </div>

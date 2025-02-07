@@ -8,16 +8,17 @@ const Listings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredListings, setFilteredListings] = useState([]);
 
+
   useEffect(() => {
     if (!loading) {
       // Filter hotelData based on names present in hotelListData
       const matchedData = hotelData.filter((hotel) =>
-        hotelListData.some((listItem) => listItem.title === hotel.name)
+        hotelListData.some((listItem) => listItem.name === hotel.title)
       );
 
       // Apply search filtering on the matched data
       const filteredData = matchedData.filter((item) => {
-        const itemName = item.name ? item.name.toLowerCase() : "";
+        const itemName = item.title ? item.title.toLowerCase() : "";
         const itemLocation = item.location ? item.location.toLowerCase() : "";
         return (
           itemName.includes(searchTerm.toLowerCase()) ||

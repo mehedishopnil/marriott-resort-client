@@ -14,6 +14,7 @@ import GuideBooks from "../../pages/GuideBooks/GuideBooks";
 import CreateNewList from "../../pages/CreateNewList/CreateNewList";
 import Listings from "../../pages/Listings/Listings";
 import PrivateRout from "../PrivateRoute";
+import Resorts from "../../pages/Resorts/Resorts";
 
 
 export const router = createBrowserRouter([
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
             {
                 path: 'profile',
                 element: <Profile/>
+            },
+            {
+                path: 'resorts',
+                element: <Resorts/>
             },
             {
                path: 'individual-earnings/:id',

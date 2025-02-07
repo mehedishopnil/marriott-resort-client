@@ -8,7 +8,7 @@ import { FaHome, FaUser } from "react-icons/fa";
 import { HiOutlineHomeModern } from "react-icons/hi2";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
-import logo from "../../../public/Marriott-Logo.png";
+import logo from "../../../public/Expedia_Logo.png";
 import Spinner from "../../components/Spinner";
 
 
@@ -32,7 +32,7 @@ const HostingDashboard = () => {
         <div className="hidden lg:block lg:w-64 lg:flex-shrink-0 bg-slate-200">
           <div className="mt-5 ml-5">
             <Link to="/">
-              <img src={logo} className="w-8 md:w-32" alt="Marriott Logo" />
+              <img src={logo} className="max-w-28 md:w-32" alt="Marriott Logo" />
             </Link>
           </div>
 
@@ -89,10 +89,8 @@ const HostingDashboard = () => {
           <div className="lg:hidden flex items-center justify-between p-4 bg-slate-200">
             <Link to="/">
                       <div className="flex items-center gap-3">
-                        <img src={logo} className="w-8 md:w-32" alt="Marriott Logo" />
-                        <h1 className="text-2xl font-bold uppercase text-[#b80606]">
-                          Marriott
-                        </h1>
+                        <img src={logo} className="w-32 md:w-32" alt="Marriott Logo" />
+                        
                       </div>
                     </Link>
             <button
