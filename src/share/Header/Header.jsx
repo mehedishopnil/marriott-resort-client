@@ -4,7 +4,8 @@ import { Disclosure, Transition } from "@headlessui/react";
 import { MdMenu } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
-import logo from "../../../public/Marriott-Logo.png";
+import logo from "../../../public/Expedia_Logo.png";
+import { IoMdDownload } from "react-icons/io";
 
 const Header = () => {
   const { usersData, logout } = useContext(AuthContext);
@@ -18,20 +19,23 @@ const Header = () => {
   };
 
   return (
-    <div className="container mx-auto bg-slate-300 py-5 px-5">
+    <div className="container mx-auto bg-white shadow-md  py-5 px-5">
       <div className="flex items-center justify-between">
         {/* Logo */}
         <Link to="/">
           <div className="flex items-center gap-3">
-            <img src={logo} className="w-8 md:w-32" alt="Marriott Logo" />
-            <h1 className="text-2xl font-bold uppercase text-[#b80606]">
-              Marriott
-            </h1>
+            <img src={logo} className="w-32 md:w-32" alt="Marriott Logo" />
           </div>
         </Link>
 
-        {/* Hamburger & User Icon */}
+        {/* Hamburger, Get the App Button & User Icon */}
         <div className="md:hidden flex items-center gap-5">
+          {/* Get the App Button */}
+          <button className="flex items-center gap-2 rounded-full border border-gray-400 py-2  px-4 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+          <IoMdDownload className="text-blue-500 hover:text-white"/> Get the App
+          </button>
+
+          {/* Profile Icon */}
           {isUserLoggedIn ? (
             <Link to="/profile">
               <img
@@ -45,6 +49,8 @@ const Header = () => {
               <FaUserCircle className="text-3xl" />
             </Link>
           )}
+
+          {/* Hamburger Menu Button */}
           <button
             onClick={toggleMobileMenu}
             className="text-gray-700 hover:text-gray-900 focus:outline-none"

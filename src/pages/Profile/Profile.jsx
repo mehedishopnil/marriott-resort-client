@@ -8,6 +8,7 @@ import { MdOutlinePets } from "react-icons/md";
 import { MdOutlineLightbulbCircle } from "react-icons/md";
 import { MdOutlineRoomService } from "react-icons/md";
 import { FaStar } from 'react-icons/fa';
+import Spinner from "../../components/Spinner";
 
 const Profile = () => {
   const { usersData } = useContext(AuthContext);
@@ -16,7 +17,7 @@ const Profile = () => {
   const user = usersData[0];
 
   if (!user) {
-    return <p>No user data available</p>;
+    return <Spinner />;
   }
 
   const { name, img, title, reviewsCount, rating, hostingCount, gender, education, work, uniqueHomeFeature, funFact, pets, guestInteractions, about } = user;
