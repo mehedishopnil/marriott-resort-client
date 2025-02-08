@@ -85,6 +85,11 @@ const Header = () => {
             <ul className="p-4 text-gray-700 font-bold text-xl">
               {isUserLoggedIn ? (
                 <>
+                  <Link to="/hosting-dashboard/add-property">
+                  <li>
+                    <button onClick={logout}>Add Property</button>
+                  </li>
+                  </Link>
                   <li>
                     <button onClick={logout}>Log Out</button>
                   </li>

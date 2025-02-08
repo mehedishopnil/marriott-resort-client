@@ -15,6 +15,7 @@ import CreateNewList from "../../pages/CreateNewList/CreateNewList";
 import Listings from "../../pages/Listings/Listings";
 import PrivateRout from "../PrivateRoute";
 import Resorts from "../../pages/Resorts/Resorts";
+import AddProperty from "../../pages/AddProperty/AddProperty";
 
 
 export const router = createBrowserRouter([
@@ -85,8 +86,13 @@ export const router = createBrowserRouter([
                 element: <Listings></Listings>
             },
             {
+                path: 'add-property',
+                element: <AddProperty />
+            }
+            ,
+            {
                 path: 'individual-earnings/:id',
-                element: <IndividualEarnings></IndividualEarnings>
+                element: <IndividualEarnings />
             },
             
         ]
