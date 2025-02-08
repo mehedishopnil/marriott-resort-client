@@ -12,6 +12,7 @@ const AddProperty = () => {
       country: "",
       address: "",
       unitNumber: "",
+      reservationNumber: "",
       city: "",
       state: "",
       zipCode: "",
@@ -255,6 +256,14 @@ const AddProperty = () => {
               value={formData.details.unitNumber}
               onChange={handleInputChange}
               placeholder="Unit number (optional)"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="text"
+              name="reservationNumber"
+              value={formData.details.reservationNumber}
+              onChange={handleInputChange}
+              placeholder="Reservation number"
               className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <input
