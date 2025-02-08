@@ -84,19 +84,21 @@ const Header = () => {
             <div className="w-full border border-gray-300"></div>
             <ul className="p-4 text-gray-700 font-bold text-xl">
               {isUserLoggedIn ? (
-                <>
-                  <Link to="/hosting-dashboard/add-property">
+                <div className=" space-y-2">
+                  
                   <li>
-                    <button onClick={logout}>Add Property</button>
+                  <Link to="/hosting-dashboard/add-property">
+                    Add Property
+                    </Link>
                   </li>
-                  </Link>
+                  
                   <li>
                     <button onClick={logout}>Log Out</button>
                   </li>
                   <li>
                     <Link to="/profile" onClick={toggleMobileMenu}>Profile</Link>
                   </li>
-                </>
+                </div>
               ) : (
                 <>
                   <li>
