@@ -30,13 +30,13 @@ const Profile = () => {
           <div className="flex justify-end  items-center col-span-3 pr-8 -m-5 lg:mr-10">
             <div className="flex flex-col items-center lg:pl-5 ml-5">
               <img
-                className="rounded-full w-16 h-16 lg:w-20 lg:h-20 "
+                className="rounded-full w-22 h-22 lg:w-20 lg:h-20 "
                 src={img}
                 alt="Profile"
               />
 
               <div className="mt-2 text-center">
-                <h2 className="text-sm lg:text-xl font-semibold">{name}</h2>
+                <h2 className="text-lg lg:text-xl font-semibold">{name}</h2>
                 <p className="text-sm text-gray-500">{title}</p>
               </div>
             </div>

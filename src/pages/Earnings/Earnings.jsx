@@ -21,7 +21,9 @@ const Earnings = () => {
 
     earningList.forEach((property) => {
       Object.entries(property.earnings).forEach(([year, amount]) => {
-        yearlySum[year] = (yearlySum[year] || 0) + amount;
+        // Ensure the amount is a number
+        const numericAmount = typeof amount === 'number' ? amount : parseFloat(amount);
+        yearlySum[year] = (yearlySum[year] || 0) + numericAmount;
       });
     });
 
@@ -31,17 +33,20 @@ const Earnings = () => {
       "Amount Earned": amount,
     }));
 
+    // Sort the array by year (ascending order)
+    yearlyEarningsArray.sort((a, b) => a.year.localeCompare(b.year));
+
     // Set the state with the calculated yearly earnings
     setYearlyEarnings(yearlyEarningsArray);
   }, [earningList]);
 
   return (
     <div className='container mx-auto my-10'>
-      
       <div className="mx-5">
-      
         <div>
-        <h3 className='text-2xl font-semibold uppercase text-center my-6'>Yearly Earnings <span className='font-bold'>Chart</span></h3>
+          <h3 className='text-2xl font-semibold uppercase text-center my-6'>
+            Yearly Earnings <span className='font-bold'>Chart</span>
+          </h3>
           {yearlyEarnings.length > 0 && (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
@@ -72,7 +77,9 @@ const Earnings = () => {
         </div>
 
         <div className='mx-5'>
-        <h3 className='text-2xl font-semibold uppercase text-center my-6'>Yearly Earnings <span className='font-bold'>Table</span></h3>
+          <h3 className='text-2xl font-semibold uppercase text-center my-6'>
+            Yearly Earnings <span className='font-bold'>Table</span>
+          </h3>
           <table className="w-full table-fixed border-collapse border border-gray-300">
             <thead>
               <tr>
@@ -85,7 +92,10 @@ const Earnings = () => {
                 <tr key={entry.year}>
                   <td className="border text-center border-gray-300 py-2 px-4">{entry.year}</td>
                   <td className="border text-center border-gray-300 py-2 px-4">
-                  ${entry["Amount Earned"].toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                    ${entry["Amount Earned"].toLocaleString(undefined, {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })}
                   </td>
                 </tr>
               ))}

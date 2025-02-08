@@ -17,6 +17,8 @@ const AuthProvider = ({ children }) => {
   const [earningList, setEarningList] = useState([]);
   const [usersData, setUsersData] = useState([]);
 
+  console.log(earningList)
+
 
   // Fetch hotel data
   useEffect(() => {
