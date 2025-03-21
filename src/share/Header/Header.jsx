@@ -1,19 +1,19 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import { FaUserCircle, FaSignOutAlt } from "react-icons/fa"; // Import FaSignOutAlt
+import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
+import Swal from "sweetalert2";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
 import logo from "../../../public/Expedia_Logo.png";
 import ToggleMenu from "../../components/ToggleMenu/ToggleMenu";
 
 const Header = () => {
-  const { usersData, signOut } = useContext(AuthContext);
+  const { user, signOut } = useContext(AuthContext); // Destructure user and signOut from AuthContext
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
 
-  const user = usersData?.length > 0 ? usersData[0] : null;
-  const isUserLoggedIn = !!user;
+  const isUserLoggedIn = !!user; // Check if user is logged in
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
@@ -26,6 +26,18 @@ const Header = () => {
   // Function to close the profile menu
   const closeProfileMenu = () => {
     setProfileMenuOpen(false);
+  };
+
+  // Handle signOut with SweetAlert2
+  const handleSignOut = () => {
+    Swal.fire({
+      title: "Logged Out Successfully",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1500,
+    }).then(() => {
+      signOut(); // Call the signOut function from AuthContext
+    });
   };
 
   return (
@@ -46,24 +58,30 @@ const Header = () => {
             <span className="text-[15px] md:text-xl">Get the App</span>
           </button>
 
-          {/* Profile Icon and signOut Icon */}
+          {/* Profile Icon and Sign Out Icon */}
           <div className="flex items-center gap-3">
-            {isUserLoggedIn && (
-              <button onClick={signOut} className="text-gray-700 hover:text-red-600">
-                <FaSignOutAlt className="text-2xl" />
-              </button>
+            {isUserLoggedIn ? (
+              <>
+                <button onClick={handleSignOut} className="text-gray-700 hover:text-red-600">
+                  <FaSignOutAlt className="text-2xl" />
+                </button>
+                <button onClick={toggleProfileMenu}>
+                  {user.img ? (
+                    <img
+                      src={user.img}
+                      alt="Profile"
+                      className="w-[30px] h-[30px] rounded-full"
+                    />
+                  ) : (
+                    <FaUserCircle className="text-3xl text-gray-700" />
+                  )}
+                </button>
+              </>
+            ) : (
+              <Link to="/login" className="btn btn-sm  rounded-full bg-gray-600 text-white  hover:bg-blue-700">
+                Sign In
+              </Link>
             )}
-            <button onClick={toggleProfileMenu}>
-              {isUserLoggedIn && user.img ? (
-                <img
-                  src={user.img}
-                  alt="Profile"
-                  className="w-[30px] h-[30px] rounded-full"
-                />
-              ) : (
-                <FaUserCircle className="text-3xl text-gray-700" />
-              )}
-            </button>
           </div>
 
           {/* Hamburger Menu Button */}
@@ -117,7 +135,7 @@ const Header = () => {
                     </Link>
                   </li>
                   <li>
-                    <button onClick={signOut}>Log Out</button>
+                    <button onClick={handleSignOut}>Log Out</button>
                   </li>
                   <li>
                     <Link to="/profile" onClick={toggleMobileMenu}>
@@ -155,7 +173,7 @@ const Header = () => {
         <div className="hidden md:flex gap-5 justify-end">
           {isUserLoggedIn ? (
             <div className="flex gap-5 items-center">
-              <button onClick={signOut} className="text-gray-700 hover:text-red-600">
+              <button onClick={handleSignOut} className="text-gray-700 hover:text-red-600">
                 <FaSignOutAlt className="text-2xl" />
               </button>
               <Link to="/profile">
@@ -171,14 +189,9 @@ const Header = () => {
               </Link>
             </div>
           ) : (
-            <>
-              <Link className="btn btn-sm" to="/login">
-                Log In
-              </Link>
-              <Link className="btn btn-sm" to="/register">
-                Register
-              </Link>
-            </>
+            <Link to="/login" className="btn btn-sm bg-gray-600 text-white hover:bg-blue-700">
+              Sign In
+            </Link>
           )}
         </div>
       </div>
