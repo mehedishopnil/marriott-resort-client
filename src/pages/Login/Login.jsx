@@ -1,104 +1,135 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
+import Swal from "sweetalert2";
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate(); // For redirecting after login
+  const { login, googleLogin, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
+  // Handle Google Login
+  const handleGoogleLogin = async () => {
+    setIsLoggingIn(true);
+    try {
+      await googleLogin();
+      Swal.fire({
+        title: "Successfully Signed In with Google",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      navigate("/hosting-dashboard/listings");
+    } catch (error) {
+      console.error("Google Login Failed:", error);
+      Swal.fire({
+        title: "Google Login Failed",
+        text: error.message,
+        icon: "error",
+      });
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  // Handle Email/Password Login
   const handleLogin = async (event) => {
     event.preventDefault();
+    setIsLoggingIn(true);
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
 
     try {
-      const user = await login(email, password);
-      // Redirect to dashboard or another page after successful login
-      navigate('/dashboard'); // Change the route as needed
+      await login(email, password);
+      Swal.fire({
+        title: "Successfully Signed In",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      navigate("/hosting-dashboard/listings");
     } catch (error) {
-      // Handle login error with user feedback
       console.error("Login failed:", error);
-      alert("Login failed. Please check your credentials and try again.");
+      Swal.fire({
+        title: "Login Failed",
+        text: error.message,
+        icon: "error",
+      });
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-full bg-base-100">
-      <div className="hero w-full h-auto p-10 rounded bg-base-200">
-        <div className="hero-content flex-col lg:flex-row-reverse">
-          <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-            <h1 className="text-center text-2xl font-bold pt-4">Log In</h1>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold text-center text-gray-900">Log In</h1>
 
-            <form onSubmit={handleLogin} className="card-body">
-              <div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Email</span>
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="email"
-                    name="email"
-                    className="input input-bordered"
-                    required
-                  />
-                </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Password</span>
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="password"
-                    name="password"
-                    className="input input-bordered"
-                    required
-                  />
-                  <label className="label">
-                    <a
-                      href="#"
-                      className="label-text-alt link link-hover text-[#D1A054]"
-                    >
-                      Forgot password?
-                    </a>
-                  </label>
-                </div>
-
-                {/* Remove captcha if not used */}
-                {/* <div className="">
-                  <label className="text-[#D1A054]"></label>
-                  <input
-                    type="text"
-                    placeholder="type the captcha"
-                    className="input input-bordered w-full"
-                  />
-                </div> */}
-
-                <div className="form-control mt-6">
-                  <input
-                    type="submit"
-                    value="Login"
-                    className="btn bg-[#D1A054] text-white hover:bg-[#b18441]"
-                  />
-                </div>
-                <p>
-                  Do not have an account? Please{" "}
-                  <Link
-                    to="/registration"
-                    className="font-bold text-[#D1A054]"
-                  >
-                    Register
-                  </Link>
-                </p>
-              </div>
-            </form>
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              placeholder="email"
+              name="email"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#D1A054] focus:border-[#D1A054]"
+              required
+              disabled={isLoggingIn || loading}
+            />
           </div>
-
-          <div className="text-center lg:text-left">
-            <img src="" alt="" />
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              placeholder="password"
+              name="password"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#D1A054] focus:border-[#D1A054]"
+              required
+              disabled={isLoggingIn || loading}
+            />
+            <div className="mt-2 text-right">
+              <a href="#" className="text-sm text-[#D1A054] hover:underline">
+                Forgot password?
+              </a>
+            </div>
           </div>
+          <div>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 text-white bg-[#D1A054] rounded-md hover:bg-[#b18441] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D1A054] disabled:opacity-50"
+              disabled={isLoggingIn || loading}
+            >
+              {isLoggingIn || loading ? "Logging In..." : "Login"}
+            </button>
+          </div>
+        </form>
+
+        {/* Google Login Button */}
+        <div className="mt-6">
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D1A054] disabled:opacity-50"
+            disabled={isLoggingIn || loading}
+          >
+            <img
+              src="https://www.svgrepo.com/show/355037/google.svg"
+              alt="Google Logo"
+              className="w-5 h-5 mr-2"
+            />
+            {isLoggingIn || loading ? "Logging In..." : "Continue with Google"}
+          </button>
         </div>
+
+        <p className="text-center text-sm text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/registration"
+            className="font-medium text-[#D1A054] hover:underline"
+          >
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

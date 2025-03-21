@@ -23,6 +23,11 @@ const Header = () => {
     setProfileMenuOpen((prev) => !prev);
   };
 
+  // Function to close the profile menu
+  const closeProfileMenu = () => {
+    setProfileMenuOpen(false);
+  };
+
   return (
     <div className="container mx-auto bg-white shadow-md py-5 px-5 relative">
       <div className="flex items-center justify-between">
@@ -42,19 +47,17 @@ const Header = () => {
           </button>
 
           {/* Profile Icon */}
-          {isUserLoggedIn ? (
-            <button onClick={toggleProfileMenu}>
+          <button onClick={toggleProfileMenu}>
+            {isUserLoggedIn && user.img ? (
               <img
                 src={user.img}
                 alt="Profile"
                 className="w-[30px] h-[30px] rounded-full"
               />
-            </button>
-          ) : (
-            <button onClick={toggleProfileMenu}>
-              <FaUserCircle className="text-3xl" />
-            </button>
-          )}
+            ) : (
+              <FaUserCircle className="text-3xl text-gray-700" />
+            )}
+          </button>
 
           {/* Hamburger Menu Button */}
           <button
@@ -68,7 +71,7 @@ const Header = () => {
         {/* Profile Menu */}
         {isProfileMenuOpen && (
           <div className="absolute right-5 top-16 bg-white shadow-lg rounded-lg p-4 z-50">
-            <ToggleMenu />
+            <ToggleMenu closeMenu={closeProfileMenu} />
           </div>
         )}
 
@@ -149,11 +152,15 @@ const Header = () => {
                 Log Out
               </button>
               <Link to="/profile">
-                <img
-                  src={user.img}
-                  alt="Profile"
-                  className="w-[50px] h-[50px] rounded-full"
-                />
+                {user.img ? (
+                  <img
+                    src={user.img}
+                    alt="Profile"
+                    className="w-[50px] h-[50px] rounded-full"
+                  />
+                ) : (
+                  <FaUserCircle className="text-4xl text-gray-700" />
+                )}
               </Link>
             </div>
           ) : (

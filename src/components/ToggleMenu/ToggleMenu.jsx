@@ -3,19 +3,22 @@ import { FaSearch, FaQuestionCircle } from 'react-icons/fa';
 import { MdOutlineTravelExplore } from 'react-icons/md';
 import { IoMdMail } from 'react-icons/io';
 import { BsFlag } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 
-const ToggleMenu = () => {
+const ToggleMenu = ({ closeMenu }) => {
   return (
-    <div className=" bg-white rounded-lg p-4">
+    <div className="bg-white rounded-lg p-4">
       {/* Title */}
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         Unlock instant savings with Member Prices.
       </h3>
 
       {/* Sign In Button */}
-      <button className="w-full bg-blue-600 text-white font-medium py-2 rounded-full hover:bg-blue-700 transition">
-        Sign in
-      </button>
+      <Link to="/login" onClick={closeMenu}>
+        <button className="w-full bg-blue-600 text-white font-medium py-2 rounded-full hover:bg-blue-700 transition">
+          Sign in
+        </button>
+      </Link>
 
       {/* Learn More */}
       <p className="text-gray-800 font-semibold text-sm text-center mt-2 cursor-pointer hover:underline">
@@ -29,7 +32,7 @@ const ToggleMenu = () => {
           <span>Inbox</span>
         </div>
 
-        <hr className='text-gray-300'/>
+        <hr className="text-gray-300" />
 
         <div className="flex items-center gap-3 text-gray-700 cursor-pointer hover:text-blue-600">
           <FaSearch className="text-xl" />
@@ -46,7 +49,7 @@ const ToggleMenu = () => {
           <span>English. USD $</span>
         </div>
 
-        <hr className='text-gray-300'/>
+        <hr className="text-gray-300" />
 
         <div className="flex items-center gap-3 text-gray-700 cursor-pointer hover:text-blue-600">
           <MdOutlineTravelExplore className="text-xl" />
