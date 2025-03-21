@@ -1,14 +1,14 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaSignOutAlt } from "react-icons/fa"; // Import FaSignOutAlt
 import { IoMdDownload } from "react-icons/io";
 import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
 import logo from "../../../public/Expedia_Logo.png";
 import ToggleMenu from "../../components/ToggleMenu/ToggleMenu";
 
 const Header = () => {
-  const { usersData, logout } = useContext(AuthContext);
+  const { usersData, signOut } = useContext(AuthContext);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
 
@@ -46,18 +46,25 @@ const Header = () => {
             <span className="text-[15px] md:text-xl">Get the App</span>
           </button>
 
-          {/* Profile Icon */}
-          <button onClick={toggleProfileMenu}>
-            {isUserLoggedIn && user.img ? (
-              <img
-                src={user.img}
-                alt="Profile"
-                className="w-[30px] h-[30px] rounded-full"
-              />
-            ) : (
-              <FaUserCircle className="text-3xl text-gray-700" />
+          {/* Profile Icon and signOut Icon */}
+          <div className="flex items-center gap-3">
+            {isUserLoggedIn && (
+              <button onClick={signOut} className="text-gray-700 hover:text-red-600">
+                <FaSignOutAlt className="text-2xl" />
+              </button>
             )}
-          </button>
+            <button onClick={toggleProfileMenu}>
+              {isUserLoggedIn && user.img ? (
+                <img
+                  src={user.img}
+                  alt="Profile"
+                  className="w-[30px] h-[30px] rounded-full"
+                />
+              ) : (
+                <FaUserCircle className="text-3xl text-gray-700" />
+              )}
+            </button>
+          </div>
 
           {/* Hamburger Menu Button */}
           <button
@@ -110,7 +117,7 @@ const Header = () => {
                     </Link>
                   </li>
                   <li>
-                    <button onClick={logout}>Log Out</button>
+                    <button onClick={signOut}>Log Out</button>
                   </li>
                   <li>
                     <Link to="/profile" onClick={toggleMobileMenu}>
@@ -148,8 +155,8 @@ const Header = () => {
         <div className="hidden md:flex gap-5 justify-end">
           {isUserLoggedIn ? (
             <div className="flex gap-5 items-center">
-              <button className="btn btn-sm" onClick={logout}>
-                Log Out
+              <button onClick={signOut} className="text-gray-700 hover:text-red-600">
+                <FaSignOutAlt className="text-2xl" />
               </button>
               <Link to="/profile">
                 {user.img ? (
