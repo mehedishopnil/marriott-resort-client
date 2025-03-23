@@ -24,7 +24,7 @@ const Login = () => {
       console.error("Google Login Failed:", error);
       Swal.fire({
         title: "Google Login Failed",
-        text: error.message,
+        text: "An error occurred during Google login. Please try again.",
         icon: "error",
       });
     } finally {
@@ -53,7 +53,7 @@ const Login = () => {
       console.error("Login failed:", error);
       Swal.fire({
         title: "Login Failed",
-        text: error.message,
+        text: "Invalid email or password. Please try again.",
         icon: "error",
       });
     } finally {
@@ -68,30 +68,38 @@ const Login = () => {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
+              id="email"
               placeholder="email"
               name="email"
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#D1A054] focus:border-[#D1A054]"
               required
               disabled={isLoggingIn || loading}
+              autoComplete="email"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               type="password"
+              id="password"
               placeholder="password"
               name="password"
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#D1A054] focus:border-[#D1A054]"
               required
               disabled={isLoggingIn || loading}
+              autoComplete="current-password"
             />
             <div className="mt-2 text-right">
-              <a href="#" className="text-sm text-[#D1A054] hover:underline">
+              <Link to="/forgot-password" className="text-sm text-[#D1A054] hover:underline">
                 Forgot password?
-              </a>
+              </Link>
             </div>
           </div>
           <div>
@@ -99,6 +107,7 @@ const Login = () => {
               type="submit"
               className="w-full px-4 py-2 text-white bg-[#D1A054] rounded-md hover:bg-[#b18441] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D1A054] disabled:opacity-50"
               disabled={isLoggingIn || loading}
+              aria-disabled={isLoggingIn || loading}
             >
               {isLoggingIn || loading ? "Logging In..." : "Login"}
             </button>
@@ -111,6 +120,7 @@ const Login = () => {
             onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D1A054] disabled:opacity-50"
             disabled={isLoggingIn || loading}
+            aria-disabled={isLoggingIn || loading}
           >
             <img
               src="https://www.svgrepo.com/show/355037/google.svg"

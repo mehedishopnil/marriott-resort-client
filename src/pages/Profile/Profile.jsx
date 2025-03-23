@@ -11,16 +11,18 @@ import { FaStar } from 'react-icons/fa';
 import Spinner from "../../components/Spinner";
 
 const Profile = () => {
-  const { usersData } = useContext(AuthContext);
+  const { UserInfo, usersData } = useContext(AuthContext);
 
   
-  const user = usersData[0];
+  const user = UserInfo[0];
 
   if (!user) {
     return <Spinner />;
   }
 
-  const { name, img, title, reviewsCount, rating, hostingCount, gender, education, work, uniqueHomeFeature, funFact, pets, guestInteractions, about } = user;
+  const {email, name, imageURL:img} = usersData;
+
+  const {  title, reviewsCount, rating, hostingCount, gender, education, work, uniqueHomeFeature, funFact, pets, guestInteractions, about } = user;
 
   return (
     <div className="container mx-auto lg:grid lg:grid-cols-2 my-10">
@@ -109,7 +111,7 @@ const Profile = () => {
           </div>
           <div className="lg:mx-5 pt-5 px-2 lg:-m-3 lg:w-10/12">
             <p>
-              {about}
+            I'm {name}, {about}
             </p>
           </div>
         </div>

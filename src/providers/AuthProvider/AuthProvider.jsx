@@ -26,265 +26,9 @@ const AuthProvider = ({ children }) => {
   const [hotelListData, setHotelListData] = useState([]);
   const [earningList, setEarningList] = useState([]);
   const [usersData, setUsersData] = useState([]);
-  const [allUsersData, setAllUsersData] = useState([]);
+  const [UserInfo, setUserInfo] = useState([]);
 
-  // Track authentication state
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        // Fetch specific user data from the backend
-        fetch(`${import.meta.env.VITE_API_Link}/users?email=${currentUser.email}`)
-          .then(async (res) => {
-            if (!res.ok) {
-              const responseText = await res.text();
-              console.error(
-                `Error fetching user: ${responseText}, Status: ${res.status}`
-              );
-              if (res.status === 404) {
-                setUser(null); // User not found
-              } else {
-                throw new Error(`Unexpected response: ${res.status}`);
-              }
-            }
-            return res.json();
-          })
-          .then((userData) => {
-            setUser(userData[0]); // Update state with backend user data
-          })
-          .catch((error) => console.error("Failed to fetch user data:", error));
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => unsubscribe(); // Cleanup the listener on unmount
-  }, []);
-
-  // Login with email and password
-  const login = async (email, password) => {
-    setLoading(true);
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const signedInUser = userCredential.user;
-
-      // Fetch specific user data from backend based on email
-      const userDataResponse = await fetch(
-        `${import.meta.env.VITE_API_Link}/users?email=${email}`
-      );
-      if (!userDataResponse.ok) {
-        throw new Error("Failed to fetch user data from backend");
-      }
-
-      const userData = await userDataResponse.json();
-      if (userData.length > 0) {
-        setUser(userData[0]);
-      } else {
-        console.error("No user data found for the email:", email);
-      }
-
-      // Show success alert
-      Swal.fire({
-        title: "Successfully Signed In",
-        showClass: {
-          popup: "animate__animated animate__fadeInUp animate__faster",
-        },
-        hideClass: {
-          popup: "animate__animated animate__fadeOutDown animate__faster",
-        },
-      });
-
-      return userCredential;
-    } catch (error) {
-      console.error("Error signing in:", error.message);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Create user and send data to backend
-  const createUser = async (name, email, password, membership) => {
-    setLoading(true);
-    try {
-      // Check if user already exists in the backend
-      const userExistsResponse = await fetch(
-        `${import.meta.env.VITE_API_Link}/users?email=${email}`
-      );
-
-      if (userExistsResponse.status === 404) {
-        console.log("User not found, proceeding with registration");
-      } else if (!userExistsResponse.ok) {
-        throw new Error("Failed to check if user exists");
-      } else {
-        const userExistsData = await userExistsResponse.json();
-        if (userExistsData.length > 0) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "You are already registered",
-          });
-          return; // Stop the registration process
-        }
-      }
-
-      // Create user with Firebase
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const createdUser = userCredential.user;
-
-      // Send user data to backend
-      const backendResponse = await fetch(
-        `${import.meta.env.VITE_API_Link}/users`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            membership,
-          }),
-        }
-      );
-
-      if (!backendResponse.ok) {
-        throw new Error("Failed to send user data to backend");
-      }
-
-      Swal.fire({
-        title: "Successfully Registered",
-        showClass: {
-          popup: "animate__animated animate__fadeInUp animate__faster",
-        },
-        hideClass: {
-          popup: "animate__animated animate__fadeOutDown animate__faster",
-        },
-      });
-
-      // Fetch specific user data from backend based on email
-      const userDataResponse = await fetch(
-        `${import.meta.env.VITE_API_Link}/users?email=${email}`
-      );
-      if (!userDataResponse.ok) {
-        throw new Error("Failed to fetch user data from backend");
-      }
-      const userData = await userDataResponse.json();
-
-      if (userData.length > 0) {
-        setUser(userData[0]);
-      } else {
-        console.error("No user data found after registration for email:", email);
-      }
-
-      return userCredential;
-    } catch (error) {
-      console.error("Error creating user:", error.message);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Google Login
-  const googleLogin = async () => {
-    setLoading(true);
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-
-      // Check if the user already exists in the backend
-      const userExistsResponse = await fetch(
-        `${import.meta.env.VITE_API_Link}/users?email=${user.email}`
-      );
-
-      if (userExistsResponse.status === 404) {
-        console.log("User not found, creating new user");
-
-        // User does not exist, send user data to backend
-        const backendResponse = await fetch(
-          `${import.meta.env.VITE_API_Link}/users`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: user.displayName || "", // Use displayName if available
-              email: user.email,
-              photoURL: user.photoURL,
-            }),
-          }
-        );
-
-        if (!backendResponse.ok) {
-          const errorText = await backendResponse.text();
-          console.error(
-            `Failed to update backend data with Google user: ${backendResponse.status} ${backendResponse.statusText}`
-          );
-          console.error("Response text:", errorText);
-          throw new Error("Failed to update backend data with Google user");
-        }
-
-        // Set user state with new user data
-        const newUser = {
-          name: user.displayName || "",
-          email: user.email,
-          photoURL: user.photoURL,
-        };
-        setUser(newUser);
-
-        console.log("New user signed up with Google:", user);
-      } else if (userExistsResponse.ok) {
-        const userExistsData = await userExistsResponse.json();
-
-        if (userExistsData.length > 0) {
-          // User exists, set user state with fetched userData
-          setUser(userExistsData[0]);
-          console.log("User logged in with Google:", user);
-        } else {
-          console.log(
-            "Unexpected response: User not found but status is not 404"
-          );
-        }
-      } else {
-        const errorText = await userExistsResponse.text();
-        console.error(
-          `Failed to check if user exists: ${userExistsResponse.status} ${userExistsResponse.statusText}`
-        );
-        console.error("Response text:", errorText);
-        throw new Error("Failed to check if user exists");
-      }
-
-      return result;
-    } catch (error) {
-      console.error("Error logging in with Google:", error.message);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Sign out process
-  const signOut = async () => {
-    setLoading(true);
-    try {
-      await firebaseSignOut(auth);
-      setUser(null);
-      console.log("User signed out");
-    } catch (error) {
-      console.error("Error signing out:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  console.log(usersData)
 
   // Fetch hotel data
   useEffect(() => {
@@ -311,28 +55,10 @@ const AuthProvider = ({ children }) => {
     fetchHotelData();
   }, []);
 
-  // Fetch users data
-  useEffect(() => {
-    const fetchUsersData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_Link}/users`);
-        if (!response.ok) {
-          throw new Error(
-            `Error fetching users data: ${response.status} ${response.statusText}`
-          );
-        }
-        const data = await response.json();
-        setUsersData(data);
-      } catch (error) {
-        console.error("Error fetching users data:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  console.log(user);
 
-    fetchUsersData();
-  }, []);
+ 
+
 
   // Fetch hotel list data
   useEffect(() => {
@@ -384,6 +110,229 @@ const AuthProvider = ({ children }) => {
     fetchEarningList();
   }, []);
 
+  // Handle user login with email and password
+  const login = async (email, password) => {
+    setLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      setUser(userCredential.user);
+      Swal.fire({
+        title: "Successfully Signed In",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("Login failed:", error);
+      Swal.fire({
+        title: "Login Failed",
+        text: error.message || "Invalid email or password. Please try again.",
+        icon: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle user creation with email and password
+  const createUser = async (email, password, name) => {
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      // Send user info to the server
+      await fetch(`${import.meta.env.VITE_API_Link}/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          name: name,
+          email: user.email,
+          imageURL: user.photoURL || null,
+        }),
+      });
+
+      setUser(user);
+      Swal.fire({
+        title: "Account Created Successfully",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("User creation failed:", error);
+      Swal.fire({
+        title: "User Creation Failed",
+        text: error.message || "An error occurred. Please try again.",
+        icon: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Google login
+  const googleLogin = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      // Send user info to the server
+      await fetch(`${import.meta.env.VITE_API_Link}/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          imageURL: user.photoURL || null,
+        }),
+      });
+
+      setUser(user);
+      Swal.fire({
+        title: "Successfully Signed In with Google",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("Google Login Failed:", error);
+      Swal.fire({
+        title: "Google Login Failed",
+        text: error.message || "An error occurred during Google login. Please try again.",
+        icon: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  // Fetch user data from the server when the authenticated user's email changes
+ useEffect(() => {
+  if (user?.email) {
+    const fetchUsersData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_Link}/users/${user.email}`);
+        if (!response.ok) {
+          throw new Error(
+            `Error fetching user data: ${response.status} ${response.statusText}`
+          );
+        }
+        const data = await response.json();
+        setUsersData(data); // Store the fetched user data in state
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsersData();
+  } else {
+    setUsersData(null); // Clear user data if no user is logged in
+  }
+}, [user?.email]);
+
+
+// // Fetch users list
+// const fetchUserByEmail = async (email) => {
+//   try {
+//     const response = await fetch(`${import.meta.env.VITE_API_Link}/users/${email}`);
+//     if (!response.ok) {
+//       throw new Error('User not found or server error');
+//     }
+//     const user = await response.json();
+//     console.log('User data:', user);
+//     return user;
+//   } catch (error) {
+//     console.error('Error fetching user:', error);
+//     return null;
+//   }
+// };
+
+// // Usage
+// fetchUserByEmail();
+
+
+// Fetch userInfo list
+useEffect(() => {
+  const fetchUserInfo = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_Link}/UserInfo`
+      );
+      if (!response.ok) {
+        throw new Error(
+          `Error fetching userInfo.json: ${response.status} ${response.statusText}`
+        );
+      }
+      const data = await response.json();
+      setUserInfo(data);
+    } catch (error) {
+      console.error("Error fetching userInfo.json:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUserInfo();
+}, []);
+
+
+
+
+
+  // Handle user sign-out
+  const signOut = async () => {
+    setLoading(true);
+    try {
+      await firebaseSignOut(auth);
+      setUser(null);
+      Swal.fire({
+        title: "Successfully Signed Out",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      Swal.fire({
+        title: "Sign Out Failed",
+        text: error.message || "An error occurred. Please try again.",
+        icon: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
   // Context value
   const authInfo = {
     user,
@@ -392,7 +341,7 @@ const AuthProvider = ({ children }) => {
     loading,
     earningList,
     usersData,
-    allUsersData,
+    UserInfo,
     login,
     createUser,
     googleLogin,
