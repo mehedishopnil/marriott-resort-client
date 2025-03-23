@@ -9,7 +9,7 @@ import logo from "../../../public/Expedia_Logo.png";
 import ToggleMenu from "../../components/ToggleMenu/ToggleMenu";
 
 const Header = () => {
-  const { user, signOut } = useContext(AuthContext); // Destructure user and signOut from AuthContext
+  const { user, signOut, usersData } = useContext(AuthContext); // Destructure user and signOut from AuthContext
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
 
@@ -66,9 +66,9 @@ const Header = () => {
                   <FaSignOutAlt className="text-2xl" />
                 </button>
                 <button onClick={toggleProfileMenu}>
-                  {user.img ? (
+                  {usersData.imageURL ? (
                     <img
-                      src={user.img}
+                      src={usersData.imageURL}
                       alt="Profile"
                       className="w-[30px] h-[30px] rounded-full"
                     />

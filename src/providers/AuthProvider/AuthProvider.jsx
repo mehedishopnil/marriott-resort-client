@@ -28,7 +28,6 @@ const AuthProvider = ({ children }) => {
   const [usersData, setUsersData] = useState([]);
   const [UserInfo, setUserInfo] = useState([]);
 
-  console.log(usersData)
 
   // Fetch hotel data
   useEffect(() => {
@@ -54,8 +53,6 @@ const AuthProvider = ({ children }) => {
 
     fetchHotelData();
   }, []);
-
-  console.log(user);
 
  
 
