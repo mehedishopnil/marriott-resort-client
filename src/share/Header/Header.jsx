@@ -3,15 +3,19 @@ import { Link } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
+import { ImSpinner8 } from "react-icons/im";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
 import logo from "../../../public/Expedia_Logo.png";
 import ToggleMenu from "../../components/ToggleMenu/ToggleMenu";
+import { AuthContext } from "../../providers/AuthProvider/AuthProvider";
 
 const Header = () => {
-  const { user, signOut, usersData } = useContext(AuthContext); // Destructure user and signOut from AuthContext
+  // const { user, signOut, usersData, loading } = useContext(AuthContext);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
+
+  const { user, usersData, loading, signOut} = useContext(AuthContext);
+
 
   const isUserLoggedIn = !!user; // Check if user is logged in
 
@@ -60,13 +64,15 @@ const Header = () => {
 
           {/* Profile Icon and Sign Out Icon */}
           <div className="flex items-center gap-3">
-            {isUserLoggedIn ? (
+            {loading ? (
+              <ImSpinner8 className="text-2xl animate-spin text-gray-500" />
+            ) : isUserLoggedIn ? (
               <>
                 <button onClick={handleSignOut} className="text-gray-700 hover:text-red-600">
                   <FaSignOutAlt className="text-2xl" />
                 </button>
                 <button onClick={toggleProfileMenu}>
-                  {usersData.imageURL ? (
+                  {usersData?.imageURL ? (
                     <img
                       src={usersData.imageURL}
                       alt="Profile"
@@ -127,7 +133,11 @@ const Header = () => {
             </ul>
             <div className="w-full border border-gray-300"></div>
             <ul className="p-4 text-gray-700 font-bold text-xl">
-              {isUserLoggedIn ? (
+              {loading ? (
+                <div className="flex justify-center">
+                  <ImSpinner8 className="animate-spin text-gray-500" />
+                </div>
+              ) : isUserLoggedIn ? (
                 <div className="space-y-2">
                   <li>
                     <Link to="/hosting-dashboard/add-property">
@@ -171,15 +181,17 @@ const Header = () => {
 
         {/* Desktop Profile & Auth Buttons */}
         <div className="hidden md:flex gap-5 justify-end">
-          {isUserLoggedIn ? (
+          {loading ? (
+            <ImSpinner8 className="text-2xl animate-spin text-gray-500" />
+          ) : isUserLoggedIn ? (
             <div className="flex gap-5 items-center">
               <button onClick={handleSignOut} className="text-gray-700 hover:text-red-600">
                 <FaSignOutAlt className="text-2xl" />
               </button>
               <Link to="/profile">
-                {user.img ? (
+                {usersData?.imageURL ? (
                   <img
-                    src={user.img}
+                    src={usersData.imageURL}
                     alt="Profile"
                     className="w-[50px] h-[50px] rounded-full"
                   />
